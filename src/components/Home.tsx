@@ -2,16 +2,12 @@ import { PRESETS } from '../data/presets';
 import { buildRoutine, formatTime, newSeed, totalDurationSec, type RoutineSource } from '../lib/routine';
 import type { Settings } from '../lib/storage';
 import { formatWhen, renameHistory, toggleHeart, useHistory, type HistoryEntry } from '../lib/history';
-import { resolveVoice, speak } from '../lib/audio';
-import { useVoices } from '../lib/useVoices';
-import { DEFAULT_DARK, DEFAULT_LIGHT, THEMES, type Theme } from '../theme/themes';
+import { DEFAULT_DARK, DEFAULT_LIGHT, type Theme } from '../theme/themes';
 import { EditableName } from './EditableName';
 import { HeartButton } from './HeartButton';
 import { Icon } from './Icon';
 import { SessionControls } from './SessionControls';
 import { RoutineCard } from './RoutineCard';
-
-const PREVIEW_LINE = 'Lymphatic hops. Bounce gently on the balls of your feet.';
 
 type Props = {
   settings: Settings;
@@ -20,14 +16,13 @@ type Props = {
   onPick: (source: RoutineSource) => void;
   onReplay: (entry: HistoryEntry) => void;
   onHistory: () => void;
+  onOpenSettings: () => void;
 };
 
-export function Home({ settings, theme, onSettings, onPick, onReplay, onHistory }: Props) {
+export function Home({ settings, theme, onSettings, onPick, onReplay, onHistory, onOpenSettings }: Props) {
   const history = useHistory();
   const favorites = history.filter((e) => e.hearted);
   const last = history[0];
-  const voices = useVoices();
-  const autoName = voices.length ? resolveVoice()?.name : undefined;
   const opts = { roundSec: settings.roundSec, count: settings.count };
   // Every routine of N moves has the same length, so any source gives the total.
   const sessionSec = totalDurationSec(buildRoutine({ kind: 'random', seed: 1 }, opts));
@@ -51,6 +46,9 @@ export function Home({ settings, theme, onSettings, onPick, onReplay, onHistory 
           </button>
           <button className="icon-btn" onClick={onHistory} aria-label="History">
             <Icon name="history" />
+          </button>
+          <button className="icon-btn" onClick={onOpenSettings} aria-label="Settings">
+            <Icon name="settings" />
           </button>
         </div>
       </header>
@@ -104,71 +102,6 @@ export function Home({ settings, theme, onSettings, onPick, onReplay, onHistory 
         ))}
       </ul>
 
-      <h2 className="section-title">Settings</h2>
-      <div className="settings">
-        <div className="setting-row theme-row">
-          <span id="theme-label">Theme</span>
-          <div className="theme-options" role="radiogroup" aria-labelledby="theme-label">
-            {[{ id: 'system', name: 'Auto' }, ...THEMES].map((t) => (
-              <button
-                key={t.id}
-                role="radio"
-                aria-checked={settings.theme === t.id}
-                className={settings.theme === t.id ? 'theme-opt active' : 'theme-opt'}
-                onClick={() => onSettings({ theme: t.id })}
-              >
-                <span className="swatch" style={swatchStyle(t)} aria-hidden="true" />
-                {t.name}
-              </button>
-            ))}
-          </div>
-        </div>
-        <label className="setting-row toggle">
-          <span>Beeps</span>
-          <input type="checkbox" checked={settings.sound} onChange={(e) => onSettings({ sound: e.target.checked })} />
-        </label>
-        <label className="setting-row toggle">
-          <span>Voice cues</span>
-          <input type="checkbox" checked={settings.voice} onChange={(e) => onSettings({ voice: e.target.checked })} />
-        </label>
-        {voices.length > 0 && (
-          <div className="setting-row voice-row">
-            <label htmlFor="voice-select">Voice</label>
-            <select
-              id="voice-select"
-              className="voice-select"
-              value={settings.voiceURI}
-              onChange={(e) => {
-                onSettings({ voiceURI: e.target.value });
-                speak(PREVIEW_LINE, e.target.value);
-              }}
-            >
-              <option value="">Automatic{autoName ? ` (${autoName})` : ''}</option>
-              {voices.map((v) => (
-                <option key={v.voiceURI} value={v.voiceURI}>
-                  {v.name} · {v.lang}
-                </option>
-              ))}
-            </select>
-            <button
-              className="icon-btn"
-              onClick={() => speak(PREVIEW_LINE, settings.voiceURI)}
-              aria-label="Preview voice"
-            >
-              <Icon name="volume" />
-            </button>
-          </div>
-        )}
-      </div>
     </main>
   );
-}
-
-/** Half-and-half swatch of a theme's background and accent; "Auto" shows the light and dark defaults. */
-function swatchStyle(t: { id: string } & Partial<Theme>) {
-  if (!t.colors) {
-    const [light, dark] = THEMES;
-    return { background: `linear-gradient(135deg, ${light.colors.bg} 50%, ${dark.colors.bg} 50%)` };
-  }
-  return { background: `linear-gradient(135deg, ${t.colors.bg} 50%, ${t.colors.accent} 50%)` };
 }

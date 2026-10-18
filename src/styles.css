@@ -580,6 +580,12 @@ button.row:active {
   box-shadow: inset 0 0 0 1px var(--line);
 }
 
+.setting-help {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
 .toggle input {
   appearance: none;
   width: 50px;

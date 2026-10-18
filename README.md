@@ -45,6 +45,7 @@ These work on the dev server only, not in the built app:
 
 - `#gallery`: every figure's keyframes plus a live animation of each
 - `#play`, `#play-work`: jump straight into a routine (get-ready screen, or the second exercise)
+- `#settings`: open the Settings screen
 - `#demo`, `#demo-done`, `#demo-history`: fill in sample history and open Home, the completion screen or History
 
 ## Notes

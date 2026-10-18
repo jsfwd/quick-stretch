@@ -4,6 +4,7 @@ import { Preview } from './components/Preview';
 import { Player } from './components/Player';
 import { Done } from './components/Done';
 import { History } from './components/History';
+import { SettingsScreen } from './components/SettingsScreen';
 import { FigureGallery } from './components/figures/FigureGallery';
 import { PRESETS } from './data/presets';
 import { buildRoutine, newSeed, type RoutineSource } from './lib/routine';
@@ -15,6 +16,7 @@ import { useTheme } from './theme/useTheme';
 type Screen =
   | { name: 'home' }
   | { name: 'history' }
+  | { name: 'settings' }
   | { name: 'preview' | 'player'; source: RoutineSource }
   | { name: 'done'; source: RoutineSource; entryId: string };
 
@@ -23,6 +25,7 @@ export default function App() {
     if (import.meta.env.DEV) {
       // Dev shortcuts for screenshots (see src/dev/demo.ts).
       const hash = location.hash;
+      if (hash === '#settings') return { name: 'settings' };
       if (hash === '#play' || hash === '#play-work') return { name: 'player', source: { kind: 'preset', preset: PRESETS[0] } };
       if (hash.startsWith('#demo')) {
         seedDemoHistory();
@@ -51,6 +54,9 @@ export default function App() {
   if (screen.name === 'history') {
     return <History onBack={home} onReplay={(e) => preview(savedSource(e))} />;
   }
+  if (screen.name === 'settings') {
+    return <SettingsScreen settings={settings} onSettings={updateSettings} onBack={home} />;
+  }
 
   const homeScreen = (
     <Home
@@ -60,6 +66,7 @@ export default function App() {
       onPick={preview}
       onReplay={(e) => preview(savedSource(e))}
       onHistory={() => setScreen({ name: 'history' })}
+      onOpenSettings={() => setScreen({ name: 'settings' })}
     />
   );
   if (screen.name === 'home' || !routine) return homeScreen;
