@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react';
 import { MAX_NAME_LENGTH } from '../lib/history';
+import { Icon } from './Icon';
 
 type Props = {
   value: string;
@@ -40,9 +41,7 @@ export function EditableName({ value, onSave, startEditing = false, onDone, clas
         aria-label={`Rename ${value}`}
       >
         <span className="name-text">{value}</span>
-        <span className="name-pencil" aria-hidden="true">
-          ✎
-        </span>
+        <Icon name="pencil" size={15} className="name-pencil" />
       </button>
     );
   }

@@ -10,6 +10,7 @@ import { buildRoutine, newSeed, type RoutineSource } from './lib/routine';
 import { addHistory, getHistory, savedSource, useHistory } from './lib/history';
 import { seedDemoHistory } from './dev/demo';
 import { useSettings } from './lib/storage';
+import { useTheme } from './theme/useTheme';
 
 type Screen =
   | { name: 'home' }
@@ -22,7 +23,7 @@ export default function App() {
     if (import.meta.env.DEV) {
       // Dev shortcuts for screenshots (see src/dev/demo.ts).
       const hash = location.hash;
-      if (hash === '#play') return { name: 'player', source: { kind: 'preset', preset: PRESETS[0] } };
+      if (hash === '#play' || hash === '#play-work') return { name: 'player', source: { kind: 'preset', preset: PRESETS[0] } };
       if (hash.startsWith('#demo')) {
         seedDemoHistory();
         const latest = getHistory()[0];
@@ -33,6 +34,7 @@ export default function App() {
     return { name: 'home' };
   });
   const [settings, updateSettings] = useSettings();
+  const theme = useTheme(settings.theme);
   const history = useHistory();
   const source = 'source' in screen ? screen.source : null;
   const routine = useMemo(
@@ -53,6 +55,7 @@ export default function App() {
   const homeScreen = (
     <Home
       settings={settings}
+      theme={theme}
       onSettings={updateSettings}
       onPick={preview}
       onReplay={(e) => preview(savedSource(e))}
@@ -79,6 +82,7 @@ export default function App() {
         <Player
           routine={routine}
           settings={settings}
+          initialStep={import.meta.env.DEV && location.hash === '#play-work' ? 3 : 0}
           onExit={home}
           onFinish={({ completed, activeSec }) => {
             const entry = addHistory({

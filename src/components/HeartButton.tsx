@@ -1,3 +1,5 @@
+import { Icon } from './Icon';
+
 type Props = {
   hearted: boolean;
   onToggle: () => void;
@@ -19,9 +21,7 @@ export function HeartButton({ hearted, onToggle, label, className = '' }: Props)
         onToggle();
       }}
     >
-      <span className="heart-icon" aria-hidden="true">
-        {hearted ? '♥' : '♡'}
-      </span>
+      <Icon name="heart" filled={hearted} className="heart-icon" />
       {label && <span>{label}</span>}
     </button>
   );

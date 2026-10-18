@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { formatDuration, formatWhen, renameHistory, toggleHeart, type HistoryEntry } from '../lib/history';
 import { EditableName } from './EditableName';
 import { HeartButton } from './HeartButton';
+import { Icon } from './Icon';
 
 type Props = { entry: HistoryEntry; onAgain: () => void; onHome: () => void };
 
@@ -12,8 +13,10 @@ export function Done({ entry, onAgain, onHome }: Props) {
   return (
     <main className="screen done">
       <div className="done-hero">
-        <div className="done-emoji">🎉</div>
-        <h1>Nice work!</h1>
+        <span className="done-badge">
+          <Icon name="check" size={30} />
+        </span>
+        <h1 className="page-title">Nice work.</h1>
         <p className="muted">
           {entry.name} · {formatWhen(entry.completedAt)}
         </p>
@@ -45,7 +48,8 @@ export function Done({ entry, onAgain, onHome }: Props) {
       <ul className="done-list">
         {entry.stretches.map((s, i) => (
           <li key={`${s.id}-${i}`} className={s.completed ? undefined : 'skipped'}>
-            <span className="done-mark">{s.completed ? '✓' : '–'}</span> {s.name}
+            <span className="done-mark">{s.completed ? <Icon name="check" size={18} /> : '–'}</span>
+            {s.name}
             {!s.completed && <span className="skip-tag">skipped</span>}
           </li>
         ))}

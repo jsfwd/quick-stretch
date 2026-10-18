@@ -9,13 +9,15 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
+      // Precache fonts and icons too so the app looks right offline.
+      workbox: { globPatterns: ['**/*.{js,css,html,woff2,png,svg}'] },
       includeAssets: ['icons/apple-touch-icon.png', 'icons/icon.svg'],
       manifest: {
         name: 'Quick Stretch',
         short_name: 'Stretch',
-        description: 'Quick 5-minute stretch and mobility routines',
-        theme_color: '#0f766e',
-        background_color: '#0b1220',
+        description: 'Quick stretch and mobility routines with guided timers',
+        theme_color: '#ffffff',
+        background_color: '#ffffff',
         display: 'standalone',
         orientation: 'portrait',
         start_url: '.',

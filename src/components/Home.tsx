@@ -2,23 +2,27 @@ import { PRESETS } from '../data/presets';
 import { buildRoutine, formatTime, newSeed, totalDurationSec, type RoutineSource } from '../lib/routine';
 import type { Settings } from '../lib/storage';
 import { formatWhen, renameHistory, toggleHeart, useHistory, type HistoryEntry } from '../lib/history';
-import { EditableName } from './EditableName';
-import { HeartButton } from './HeartButton';
 import { resolveVoice, speak } from '../lib/audio';
 import { useVoices } from '../lib/useVoices';
+import { DEFAULT_DARK, DEFAULT_LIGHT, THEMES, type Theme } from '../theme/themes';
+import { EditableName } from './EditableName';
+import { HeartButton } from './HeartButton';
+import { Icon } from './Icon';
 import { SessionControls } from './SessionControls';
+import { RoutineCard } from './RoutineCard';
 
 const PREVIEW_LINE = 'Lymphatic hops. Bounce gently on the balls of your feet.';
 
 type Props = {
   settings: Settings;
+  theme: Theme;
   onSettings: (patch: Partial<Settings>) => void;
   onPick: (source: RoutineSource) => void;
   onReplay: (entry: HistoryEntry) => void;
   onHistory: () => void;
 };
 
-export function Home({ settings, onSettings, onPick, onReplay, onHistory }: Props) {
+export function Home({ settings, theme, onSettings, onPick, onReplay, onHistory }: Props) {
   const history = useHistory();
   const favorites = history.filter((e) => e.hearted);
   const last = history[0];
@@ -27,46 +31,62 @@ export function Home({ settings, onSettings, onPick, onReplay, onHistory }: Prop
   const opts = { roundSec: settings.roundSec, count: settings.count };
   // Every routine of N moves has the same length, so any source gives the total.
   const sessionSec = totalDurationSec(buildRoutine({ kind: 'random', seed: 1 }, opts));
+  const isDark = theme.scheme === 'dark';
 
   return (
     <main className="screen home">
       <header className="home-header">
-        <div>
-          <h1>Quick Stretch</h1>
-          <p className="muted">
-            {last
-              ? `${history.length} session${history.length === 1 ? '' : 's'} done · last ${formatWhen(last.completedAt).replace(/^(Today|Yesterday)/, (d) => d.toLowerCase())}`
-              : 'Quick stretch breaks, one move at a time.'}
-          </p>
+        <h1 className="brand">
+          Quick
+          <br />
+          Stretch
+        </h1>
+        <div className="header-actions">
+          <button
+            className="icon-btn"
+            onClick={() => onSettings({ theme: isDark ? DEFAULT_LIGHT : DEFAULT_DARK })}
+            aria-label={isDark ? 'Switch to light theme' : 'Switch to dark theme'}
+          >
+            <Icon name={isDark ? 'sun' : 'moon'} />
+          </button>
+          <button className="icon-btn" onClick={onHistory} aria-label="History">
+            <Icon name="history" />
+          </button>
         </div>
-        <button className="history-link" onClick={onHistory}>
-          History
-        </button>
       </header>
+      <p className="home-meta">
+        {last
+          ? `${history.length} session${history.length === 1 ? '' : 's'} · last ${formatWhen(last.completedAt).replace(/^(Today|Yesterday)/, (d) => d.toLowerCase())}`
+          : 'Quick stretch breaks, one move at a time.'}
+      </p>
+
+      <SessionControls value={opts} onChange={onSettings} />
+
+      <button className="cta" onClick={() => onPick({ kind: 'random', seed: newSeed() })}>
+        <Icon name="shuffle" />
+        <span className="cta-label">Random routine</span>
+        <span className="cta-meta">{formatTime(sessionSec)}</span>
+      </button>
 
       {favorites.length > 0 && (
         <details className="favorites">
           <summary>
-            <span className="fav-heart" aria-hidden="true">
-              ♥
-            </span>
+            <Icon name="heart" filled className="accent-icon" />
             <span className="fav-title">Favorites</span>
             <span className="fav-count">{favorites.length}</span>
-            <span className="chevron" aria-hidden="true">
-              ›
-            </span>
+            <Icon name="chevron" size={18} className="chevron" />
           </summary>
           <ul className="fav-list">
             {favorites.map((e) => (
               <li key={e.id} className="fav-item">
                 <div className="fav-text">
                   <EditableName value={e.name} onSave={(name) => renameHistory(e.id, name)} />
-                  <span className="muted">
+                  <span className="muted small">
                     {e.stretches.length} stretches · {e.roundSec}s · {formatWhen(e.completedAt)}
                   </span>
                 </div>
                 <button className="play-btn" onClick={() => onReplay(e)} aria-label={`Start ${e.name}`}>
-                  ▶
+                  <Icon name="play" filled size={16} />
                 </button>
                 <HeartButton hearted onToggle={() => toggleHeart(e.id)} />
               </li>
@@ -75,58 +95,45 @@ export function Home({ settings, onSettings, onPick, onReplay, onHistory }: Prop
         </details>
       )}
 
-      <h2 className="section-title">Your session</h2>
-      <SessionControls value={opts} onChange={onSettings} />
-
-      <button className="random-card" onClick={() => onPick({ kind: 'random', seed: newSeed() })}>
-        <span className="random-emoji">🎲</span>
-        <span>
-          <strong>Random routine</strong>
-          <span className="muted">
-            {settings.count} stretches · {settings.roundSec}s each · {formatTime(sessionSec)}
-          </span>
-        </span>
-      </button>
-
       <h2 className="section-title">Routines</h2>
-      <ul className="preset-list">
+      <ul className="routine-list">
         {PRESETS.map((p) => (
           <li key={p.id}>
-            <button className="preset-card" onClick={() => onPick({ kind: 'preset', preset: p })}>
-              <span className="preset-emoji">{p.emoji}</span>
-              <span className="preset-text">
-                <strong>{p.name}</strong>
-                <span className="muted">{p.description}</span>
-              </span>
-              <span className="preset-time">{formatTime(sessionSec)}</span>
-            </button>
+            <RoutineCard preset={p} opts={opts} onPick={() => onPick({ kind: 'preset', preset: p })} />
           </li>
         ))}
       </ul>
 
       <h2 className="section-title">Settings</h2>
       <div className="settings">
-        <label className="toggle">
+        <div className="setting-row theme-row">
+          <span id="theme-label">Theme</span>
+          <div className="theme-options" role="radiogroup" aria-labelledby="theme-label">
+            {[{ id: 'system', name: 'Auto' }, ...THEMES].map((t) => (
+              <button
+                key={t.id}
+                role="radio"
+                aria-checked={settings.theme === t.id}
+                className={settings.theme === t.id ? 'theme-opt active' : 'theme-opt'}
+                onClick={() => onSettings({ theme: t.id })}
+              >
+                <span className="swatch" style={swatchStyle(t)} aria-hidden="true" />
+                {t.name}
+              </button>
+            ))}
+          </div>
+        </div>
+        <label className="setting-row toggle">
           <span>Beeps</span>
-          <input
-            type="checkbox"
-            checked={settings.sound}
-            onChange={(e) => onSettings({ sound: e.target.checked })}
-          />
+          <input type="checkbox" checked={settings.sound} onChange={(e) => onSettings({ sound: e.target.checked })} />
         </label>
-        <label className="toggle">
+        <label className="setting-row toggle">
           <span>Voice cues</span>
-          <input
-            type="checkbox"
-            checked={settings.voice}
-            onChange={(e) => onSettings({ voice: e.target.checked })}
-          />
+          <input type="checkbox" checked={settings.voice} onChange={(e) => onSettings({ voice: e.target.checked })} />
         </label>
         {voices.length > 0 && (
-          <div className="voice-row">
-            <label className="voice-label" htmlFor="voice-select">
-              Voice
-            </label>
+          <div className="setting-row voice-row">
+            <label htmlFor="voice-select">Voice</label>
             <select
               id="voice-select"
               className="voice-select"
@@ -143,12 +150,25 @@ export function Home({ settings, onSettings, onPick, onReplay, onHistory }: Prop
                 </option>
               ))}
             </select>
-            <button className="preview-btn" onClick={() => speak(PREVIEW_LINE, settings.voiceURI)}>
-              ▶ Preview
+            <button
+              className="icon-btn"
+              onClick={() => speak(PREVIEW_LINE, settings.voiceURI)}
+              aria-label="Preview voice"
+            >
+              <Icon name="volume" />
             </button>
           </div>
         )}
       </div>
     </main>
   );
+}
+
+/** Half-and-half swatch of a theme's background and accent; "Auto" shows the light and dark defaults. */
+function swatchStyle(t: { id: string } & Partial<Theme>) {
+  if (!t.colors) {
+    const [light, dark] = THEMES;
+    return { background: `linear-gradient(135deg, ${light.colors.bg} 50%, ${dark.colors.bg} 50%)` };
+  }
+  return { background: `linear-gradient(135deg, ${t.colors.bg} 50%, ${t.colors.accent} 50%)` };
 }

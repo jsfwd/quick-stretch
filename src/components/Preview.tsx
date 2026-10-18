@@ -2,6 +2,7 @@ import { formatTime, totalDurationSec, type Routine } from '../lib/routine';
 import { unlockAudio } from '../lib/audio';
 import type { Settings } from '../lib/storage';
 import { Figure } from './figures/Figure';
+import { Icon } from './Icon';
 import { SessionControls } from './SessionControls';
 
 type Props = {
@@ -20,32 +21,34 @@ export function Preview({ routine, settings, onSettings, onBack, onStart, onShuf
     <main className="screen preview">
       <div className="topbar">
         <button className="icon-btn" onClick={onBack} aria-label="Back">
-          ‹
+          <Icon name="back" />
         </button>
-        <span className="topbar-title">{routine.name}</span>
         <span className="topbar-meta">{formatTime(totalDurationSec(routine))}</span>
       </div>
+      <h1 className="page-title">{routine.name}</h1>
 
       <div className="preview-session">
         {locked ? (
           <p className="saved-note">
-            <span aria-hidden="true">♥</span> Favorite · {routine.exercises.length} stretches ·{' '}
-            {routine.exercises[0]?.durationSec}s each
+            <Icon name="heart" filled size={18} className="accent-icon" />
+            Favorite · {routine.exercises.length} stretches · {routine.exercises[0]?.durationSec}s each
           </p>
         ) : (
           <SessionControls value={{ roundSec: settings.roundSec, count: settings.count }} onChange={onSettings} />
         )}
       </div>
 
-      <ol className="ex-list">
-        {routine.exercises.map((ex) => (
-          <li key={ex.id} className="ex-row">
-            <Figure name={ex.figure} frame={99} className="ex-thumb" />
-            <span className="ex-row-text">
+      <ol className="row-list ex-list">
+        {routine.exercises.map((ex, i) => (
+          <li key={ex.id} className="row">
+            <span className="row-index">{i + 1}</span>
+            <Figure name={ex.figure} frame={99} thumb className="thumb" />
+            <span className="row-text">
               <strong>{ex.name}</strong>
-              <span className="muted">
-                {ex.durationSec}s{ex.sides ? ' · both sides' : ''}
-              </span>
+              <span className="muted small">{ex.cues[0]}</span>
+            </span>
+            <span className="row-meta">
+              {ex.durationSec}s{ex.sides ? ' · 2 sides' : ''}
             </span>
           </li>
         ))}
@@ -54,7 +57,8 @@ export function Preview({ routine, settings, onSettings, onBack, onStart, onShuf
       <div className="preview-actions">
         {onShuffle && (
           <button className="btn secondary" onClick={onShuffle}>
-            🎲 Shuffle
+            <Icon name="shuffle" size={20} />
+            Shuffle
           </button>
         )}
         <button

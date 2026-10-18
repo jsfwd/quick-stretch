@@ -5,13 +5,15 @@ import { beep, speak, stopSpeech } from '../lib/audio';
 import { useWakeLock } from '../lib/wakeLock';
 import type { Settings } from '../lib/storage';
 import { Figure } from './figures/Figure';
-import { TimerRing } from './TimerRing';
+import { Icon } from './Icon';
 
 type Props = {
   routine: Routine;
   settings: Settings;
   onExit: () => void;
   onFinish: (result: SessionResult) => void;
+  /** Dev shortcut only: open on a later step. */
+  initialStep?: number;
 };
 
 export type SessionResult = {
@@ -24,9 +26,9 @@ export type SessionResult = {
 /** Within this many seconds of a step starting, "back" goes to the previous move instead of restarting. */
 const BACK_RESTART_GRACE_SEC = 3;
 
-export function Player({ routine, settings, onExit, onFinish }: Props) {
+export function Player({ routine, settings, onExit, onFinish, initialStep = 0 }: Props) {
   const steps = useMemo(() => buildSteps(routine), [routine]);
-  const [stepIdx, setStepIdx] = useState(0);
+  const [stepIdx, setStepIdx] = useState(initialStep);
   const [restartNonce, setRestartNonce] = useState(0);
   const [paused, setPaused] = useState(false);
 
@@ -120,93 +122,95 @@ export function Player({ routine, settings, onExit, onFinish }: Props) {
   const mirror = halfSec !== null && remaining <= halfSec * 1000;
 
   const isBreak = step.kind !== 'work';
-  const label = mirror ? 'Other side' : ex.sides ? 'First side' : 'Go';
+  const label = paused ? 'Paused' : mirror ? 'Other side' : ex.sides ? 'First side' : 'Go';
+  const skip = () => {
+    leaveStep(durationMs - remaining);
+    advance();
+  };
 
   return (
-    <main className={`screen player ${step.kind}`}>
-      <div className="topbar">
-        <button className="icon-btn" onClick={exit} aria-label="End routine">
-          ✕
+    <main className={`screen player ${isBreak ? 'break' : 'work'}${paused ? ' is-paused' : ''}`}>
+      <div className="player-top">
+        <button className="icon-btn plain" onClick={exit} aria-label="End routine">
+          <Icon name="x" />
         </button>
-        <div className="progress-dots" aria-label={`Move ${step.exIndex + 1} of ${routine.exercises.length}`}>
+        <div className="progress-bars" aria-label={`Move ${step.exIndex + 1} of ${routine.exercises.length}`}>
           {routine.exercises.map((_, i) => (
-            <span
-              key={i}
-              className={i < step.exIndex ? 'dot done' : i === step.exIndex ? 'dot current' : 'dot'}
-            />
+            <span key={i} className={i < step.exIndex ? 'done' : i === step.exIndex && !isBreak ? 'now' : undefined} />
           ))}
         </div>
-        <span className="topbar-meta">{formatTime(totalLeftSec)}</span>
+        <span className="player-total">{formatTime(totalLeftSec)}</span>
       </div>
 
       {isBreak ? (
         <>
-          <div className="break-hero">
-            <div className={`break-pulse${paused ? ' paused' : ''}`} aria-hidden="true" />
-            <h1 className="break-title">{step.kind === 'ready' ? 'Get ready' : 'Rest'}</h1>
-            <p className="break-sub">
-              {step.kind === 'ready' ? 'Your routine starts in a moment' : 'Shake it out and breathe'}
-            </p>
-          </div>
-
-          <div className="next-card">
-            <span className="next-label">Up next</span>
-            <div className="next-body">
-              <Figure name={ex.figure} frame={99} className="next-thumb" />
-              <div className="next-text">
-                <strong>{ex.name}</strong>
-                <span className="muted">
-                  {ex.durationSec}s{ex.sides ? ' · both sides' : ''} · {step.exIndex + 1} of{' '}
-                  {routine.exercises.length}
-                </span>
-                <span className="next-cue">{ex.cues[0]}</span>
-              </div>
-            </div>
+          <h1 className="break-title">{step.kind === 'ready' ? 'Get ready' : 'Rest'}</h1>
+          <p className="break-sub">
+            {paused ? 'Paused' : step.kind === 'ready' ? 'Your routine starts in a moment.' : 'Shake it out and breathe.'}
+          </p>
+          <div className="breath" aria-hidden="true">
+            <span />
           </div>
         </>
       ) : (
         <>
           <div className="phase-label">{label}</div>
-
           <div className="figure-wrap">
             <Figure name={ex.figure} paused={paused} mirror={mirror} className="figure" />
           </div>
-
-          <div className="ex-info">
-            <h1 className="ex-name">
-              {ex.name}
-              <span className="ex-count">
-                {step.exIndex + 1}/{routine.exercises.length}
-              </span>
-            </h1>
-            <ul className="cues">
-              {ex.cues.map((c) => (
-                <li key={c}>{c}</li>
-              ))}
-            </ul>
-          </div>
+          <h1 className="ex-name">{ex.name}</h1>
+          <ul className="cues">
+            {ex.cues.map((c) => (
+              <li key={c}>{c}</li>
+            ))}
+          </ul>
         </>
       )}
 
+      <TimerDisplay remainingMs={remaining} durationMs={durationMs} />
+
+      {isBreak && (
+        <div className="next-card">
+          <Figure name={ex.figure} frame={99} thumb className="thumb" />
+          <div className="next-text">
+            <span className="next-label">
+              Up next · {step.exIndex + 1} of {routine.exercises.length}
+            </span>
+            <strong>{ex.name}</strong>
+            <span className="muted small">
+              {ex.durationSec}s{ex.sides ? ' · both sides' : ''} · {ex.cues[0]}
+            </span>
+          </div>
+        </div>
+      )}
+
       <div className="controls">
-        <button className="ctrl-btn" onClick={goBack} aria-label="Back">
-          ⏮
+        <button className="ctrl" onClick={goBack} aria-label="Back">
+          <Icon name="skipBack" />
         </button>
-        <button className="ring-btn" onClick={() => setPaused((p) => !p)} aria-label={paused ? 'Resume' : 'Pause'}>
-          <TimerRing remainingMs={remaining} durationMs={durationMs} kind={step.kind} />
-          <span className="ring-state">{paused ? '▶ Resume' : 'Tap to pause'}</span>
+        <button className="ctrl main" onClick={() => setPaused((p) => !p)} aria-label={paused ? 'Resume' : 'Pause'}>
+          <Icon name={paused ? 'play' : 'pause'} filled={paused} size={26} />
         </button>
-        <button
-          className="ctrl-btn"
-          onClick={() => {
-            leaveStep(durationMs - remaining);
-            advance();
-          }}
-          aria-label="Skip"
-        >
-          ⏭
+        <button className="ctrl" onClick={skip} aria-label="Skip">
+          <Icon name="skipForward" />
         </button>
       </div>
     </main>
+  );
+}
+
+function TimerDisplay({ remainingMs, durationMs }: { remainingMs: number; durationMs: number }) {
+  const secs = Math.ceil(remainingMs / 1000);
+  const elapsed = durationMs > 0 ? 1 - remainingMs / durationMs : 1;
+  return (
+    <div className="timer" role="timer" aria-label={`${secs} seconds left`}>
+      <div className="timer-num">
+        {String(secs).padStart(2, '0')}
+        <small>sec</small>
+      </div>
+      <div className="track">
+        <span style={{ transform: `scaleX(${Math.min(1, Math.max(0, elapsed))})` }} />
+      </div>
+    </div>
   );
 }

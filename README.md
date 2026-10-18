@@ -14,7 +14,8 @@ Quick stretch and mobility routines (lymphatic hops, desk-break stretches, etc.)
 - **Keeps the screen awake** during a routine
 - **History** of finished sessions: date and time, active time, seconds per stretch, and each stretch marked finished or skipped. Each session can be renamed or deleted, or done again
 - **Favorites:** heart a session on the completion screen and give it a name; hearted sessions are listed in a Favorites dropdown on Home, where you can rename or replay them exactly
-- **Installable and works offline**, with light and dark mode
+- **Themes:** Paper (light) and Ink (dark) with a sage accent and Instrument Serif headings; choose Auto (match the device), Paper or Ink in Settings, or flip with the sun/moon button on Home
+- **Installable and works offline**, with fonts bundled
 
 ## Run
 
@@ -36,13 +37,14 @@ Deploy `dist/` to any HTTPS static host (Vercel, Netlify, GitHub Pages), open it
 - Exercises: `src/data/exercises.ts`
 - Preset routines: `src/data/presets.ts`
 - Stick-figure poses: `src/components/figures/defs.ts`
+- Themes: `src/theme/themes.ts`. Add a theme by adding one object to `THEMES` with every colour role filled in; TypeScript rejects a theme with a missing role, and `themes.test.ts` checks its contrast
 
 ## Dev shortcuts
 
 These work on the dev server only, not in the built app:
 
 - `#gallery`: every figure's keyframes plus a live animation of each
-- `#play`: jump straight into a routine
+- `#play`, `#play-work`: jump straight into a routine (get-ready screen, or the second exercise)
 - `#demo`, `#demo-done`, `#demo-history`: fill in sample history and open Home, the completion screen or History
 
 ## Notes

@@ -5,12 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <meta name="apple-mobile-web-app-title" content="Stretch" />
-    <meta name="theme-color" content="#0f766e" />
+    <meta name="theme-color" content="#ffffff" />
     <link rel="icon" type="image/svg+xml" href="/icons/icon.svg" />
     <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
     <title>Quick Stretch</title>
+    <script>
+      // Apply the last-used theme before first paint so there's no flash (see src/theme/useTheme.ts).
+      try {
+        var t = JSON.parse(localStorage.getItem('qs.themeVars'));
+        if (t) {
+          var r = document.documentElement;
+          for (var k in t.vars) r.style.setProperty(k, t.vars[k]);
+          r.style.colorScheme = t.scheme;
+          r.dataset.scheme = t.scheme;
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', t.statusBar);
+        }
+      } catch (e) {}
+    </script>
   </head>
   <body>
     <div id="root"></div>

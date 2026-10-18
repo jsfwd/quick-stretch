@@ -10,6 +10,7 @@ import {
 } from '../lib/history';
 import { EditableName } from './EditableName';
 import { HeartButton } from './HeartButton';
+import { Icon } from './Icon';
 
 type Props = {
   onBack: () => void;
@@ -24,13 +25,13 @@ export function History({ onBack, onReplay }: Props) {
     <main className="screen history">
       <div className="topbar">
         <button className="icon-btn" onClick={onBack} aria-label="Back">
-          ‹
+          <Icon name="back" />
         </button>
-        <span className="topbar-title">History</span>
         <span className="topbar-meta">
           {history.length} session{history.length === 1 ? '' : 's'}
         </span>
       </div>
+      <h1 className="page-title">History</h1>
 
       {history.length === 0 ? (
         <p className="empty muted">No sessions yet. Finish a routine and it will show up here.</p>
@@ -57,8 +58,8 @@ function HistoryItem({ entry, onReplay }: { entry: HistoryEntry; onReplay: () =>
         <summary>
           <span className="history-main">
             <strong>{entry.name}</strong>
-            <span className="muted">{formatWhen(entry.completedAt)}</span>
-            <span className="muted">
+            <span className="muted small">{formatWhen(entry.completedAt)}</span>
+            <span className="muted small">
               {formatDuration(entry.durationSec)} · {done}/{entry.stretches.length} stretches · {entry.roundSec}s
             </span>
           </span>
@@ -77,7 +78,8 @@ function HistoryItem({ entry, onReplay }: { entry: HistoryEntry; onReplay: () =>
         <ol className="history-stretches">
           {entry.stretches.map((s, i) => (
             <li key={`${s.id}-${i}`} className={s.completed ? undefined : 'skipped'}>
-              <span className="done-mark">{s.completed ? '✓' : '–'}</span> {s.name}
+              <span className="done-mark">{s.completed ? <Icon name="check" size={18} /> : '–'}</span>
+              {s.name}
               {!s.completed && <span className="skip-tag">skipped</span>}
             </li>
           ))}

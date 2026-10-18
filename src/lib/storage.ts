@@ -1,5 +1,6 @@
 import { useCallback, useState } from 'react';
 import { clampCount, DEFAULT_COUNT, ROUND_OPTIONS, type RoundSec } from './routine';
+import { THEME_BY_ID, type ThemePref } from '../theme/themes';
 
 function read<T>(key: string, fallback: T): T {
   try {
@@ -27,6 +28,8 @@ export type Settings = {
   roundSec: RoundSec;
   /** Exercises per session. */
   count: number;
+  /** 'system' follows the device; otherwise a theme id. */
+  theme: ThemePref;
 };
 const SETTINGS_KEY = 'qs.settings';
 const DEFAULT_SETTINGS: Settings = {
@@ -35,6 +38,7 @@ const DEFAULT_SETTINGS: Settings = {
   voiceURI: '',
   roundSec: 60,
   count: DEFAULT_COUNT,
+  theme: 'system',
 };
 
 function sanitize(s: Settings): Settings {
@@ -42,6 +46,7 @@ function sanitize(s: Settings): Settings {
     ...s,
     roundSec: ROUND_OPTIONS.includes(s.roundSec) ? s.roundSec : DEFAULT_SETTINGS.roundSec,
     count: clampCount(Number(s.count)),
+    theme: s.theme === 'system' || THEME_BY_ID[s.theme] ? s.theme : 'system',
   };
 }
 

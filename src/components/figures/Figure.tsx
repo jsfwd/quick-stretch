@@ -9,13 +9,15 @@ type Props = {
   mirror?: boolean;
   /** Render a single static keyframe (gallery / reduced motion). */
   frame?: number;
+  /** Small list thumbnail: no floor or props, heavier strokes. */
+  thumb?: boolean;
   className?: string;
 };
 
 const reducedMotion =
   typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
 
-export function Figure({ name, paused = false, mirror = false, frame, className }: Props) {
+export function Figure({ name, paused = false, mirror = false, frame, thumb = false, className }: Props) {
   const def = FIGURES[name] ?? FIGURES.overheadReach;
   const frames = useMemo(() => resolvePoses(def), [def]);
   const staticFrame = frame ?? (reducedMotion ? frames.length - 1 : undefined);
@@ -49,9 +51,9 @@ export function Figure({ name, paused = false, mirror = false, frame, className 
   const far = def.view === 'side' ? 0.4 : 1;
 
   return (
-    <svg viewBox="10 12 180 182" className={className} role="img" aria-hidden="true">
-      <line x1="16" y1={FLOOR} x2="184" y2={FLOOR} className="fig-floor" />
-      {def.wall && (
+    <svg viewBox="10 12 180 182" className={`${className ?? ''}${thumb ? ' fig-thumb' : ''}`} aria-hidden="true">
+      {!thumb && <line x1="24" y1={FLOOR} x2="176" y2={FLOOR} className="fig-floor" />}
+      {!thumb && def.wall && (
         <rect x={mirror ? 200 - def.wall - 8 : def.wall} y="40" width="8" height={FLOOR - 40} className="fig-wall" />
       )}
       <g
