@@ -6,6 +6,7 @@ import { useWakeLock } from '../lib/wakeLock';
 import type { Settings } from '../lib/storage';
 import { Figure } from './figures/Figure';
 import { Icon } from './Icon';
+import { TimerRing } from './TimerRing';
 
 type Props = {
   routine: Routine;
@@ -167,7 +168,7 @@ export function Player({ routine, settings, onExit, onFinish, initialStep = 0 }:
         </>
       )}
 
-      <TimerDisplay remainingMs={remaining} durationMs={durationMs} />
+      {settings.timerStyle === 'numbers' && <TimerNumbers remainingMs={remaining} durationMs={durationMs} />}
 
       {isBreak && (
         <div className="next-card">
@@ -188,9 +189,18 @@ export function Player({ routine, settings, onExit, onFinish, initialStep = 0 }:
         <button className="ctrl" onClick={goBack} aria-label="Back">
           <Icon name="skipBack" />
         </button>
-        <button className="ctrl main" onClick={() => setPaused((p) => !p)} aria-label={paused ? 'Resume' : 'Pause'}>
-          <Icon name={paused ? 'play' : 'pause'} filled={paused} size={26} />
-        </button>
+        {settings.timerStyle === 'ring' ? (
+          <TimerRing
+            remainingMs={remaining}
+            durationMs={durationMs}
+            paused={paused}
+            onToggle={() => setPaused((p) => !p)}
+          />
+        ) : (
+          <button className="ctrl main" onClick={() => setPaused((p) => !p)} aria-label={paused ? 'Resume' : 'Pause'}>
+            <Icon name={paused ? 'play' : 'pause'} filled={paused} size={26} />
+          </button>
+        )}
         <button className="ctrl" onClick={skip} aria-label="Skip">
           <Icon name="skipForward" />
         </button>
@@ -199,7 +209,7 @@ export function Player({ routine, settings, onExit, onFinish, initialStep = 0 }:
   );
 }
 
-function TimerDisplay({ remainingMs, durationMs }: { remainingMs: number; durationMs: number }) {
+function TimerNumbers({ remainingMs, durationMs }: { remainingMs: number; durationMs: number }) {
   const secs = Math.ceil(remainingMs / 1000);
   const elapsed = durationMs > 0 ? 1 - remainingMs / durationMs : 1;
   return (

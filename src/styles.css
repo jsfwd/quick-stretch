@@ -573,6 +573,30 @@ button.row:active {
   color: var(--text);
   border-color: var(--text);
 }
+.timer-glyph {
+  width: 18px;
+  height: 18px;
+  flex: none;
+}
+.timer-glyph.numbers {
+  width: auto;
+  height: auto;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  line-height: 1;
+  color: var(--text);
+}
+.glyph-track {
+  fill: none;
+  stroke: var(--line);
+  stroke-width: 2.5;
+}
+.glyph-arc {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+}
 .swatch {
   width: 18px;
   height: 18px;
@@ -581,7 +605,8 @@ button.row:active {
 }
 
 .setting-help {
-  margin: 8px 0 0;
+  flex-basis: 100%;
+  margin: -2px 0 6px;
   color: var(--muted);
   font-size: 0.82rem;
 }
@@ -918,6 +943,64 @@ button.row:active {
 .ctrl.main:active {
   background: var(--accent);
   transform: scale(0.96);
+}
+
+/* Ring timer: the ring sits between back and skip and is itself the pause button. */
+.timer-ring {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.ring-wrap {
+  position: relative;
+  width: min(42vw, 22dvh, 168px);
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+}
+.ring-wrap svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.ring-track {
+  fill: none;
+  stroke: var(--line);
+  stroke-width: 5;
+}
+.ring-progress {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 5;
+  stroke-linecap: round;
+}
+.ring-num {
+  position: relative;
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 8dvh, 4.2rem);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  transition: opacity 0.2s;
+}
+.timer-ring.paused .ring-num {
+  opacity: 0.4;
+}
+.timer-ring:active .ring-wrap {
+  transform: scale(0.97);
+}
+.ring-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+.timer-ring.paused .ring-hint {
+  color: var(--accent);
+  font-weight: 600;
 }
 
 /* Get ready / rest */

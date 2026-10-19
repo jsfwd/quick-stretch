@@ -1,8 +1,13 @@
 import { resolveVoice, speak } from '../lib/audio';
-import type { Settings } from '../lib/storage';
+import type { Settings, TimerStyle } from '../lib/storage';
 import { useVoices } from '../lib/useVoices';
 import { THEMES, type Theme } from '../theme/themes';
 import { Icon } from './Icon';
+
+const TIMER_OPTIONS: { id: TimerStyle; name: string }[] = [
+  { id: 'ring', name: 'Ring' },
+  { id: 'numbers', name: 'Numbers' },
+];
 
 const PREVIEW_LINE = 'Lymphatic hops. Bounce gently on the balls of your feet.';
 
@@ -43,9 +48,39 @@ export function SettingsScreen({ settings, onSettings, onBack }: Props) {
               </button>
             ))}
           </div>
+          <p className="setting-help">Auto matches your device's light or dark mode.</p>
+        </div>
+        <div className="setting-row theme-row">
+          <span id="timer-label">Timer</span>
+          <div className="theme-options" role="radiogroup" aria-labelledby="timer-label">
+            {TIMER_OPTIONS.map((t) => (
+              <button
+                key={t.id}
+                role="radio"
+                aria-checked={settings.timerStyle === t.id}
+                className={settings.timerStyle === t.id ? 'theme-opt active' : 'theme-opt'}
+                onClick={() => onSettings({ timerStyle: t.id })}
+              >
+                {t.id === 'ring' ? (
+                  <svg className="timer-glyph" viewBox="0 0 20 20" aria-hidden="true">
+                    <circle cx="10" cy="10" r="7.5" className="glyph-track" />
+                    <path d="M10 2.5a7.5 7.5 0 1 1-7.5 7.5" className="glyph-arc" />
+                  </svg>
+                ) : (
+                  <span className="timer-glyph numbers" aria-hidden="true">
+                    42
+                  </span>
+                )}
+                {t.name}
+              </button>
+            ))}
+          </div>
+          <p className="setting-help">
+            Ring shows the seconds inside a progress ring you tap to pause. Numbers shows a large countdown over a
+            progress line.
+          </p>
         </div>
       </div>
-      <p className="setting-help">Auto matches your device's light or dark mode.</p>
 
       <h2 className="section-title">Sound</h2>
       <div className="settings">

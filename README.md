@@ -8,7 +8,7 @@ Quick stretch and mobility routines (lymphatic hops, desk-break stretches, etc.)
 - **Random routine** that starts with a gentle move and mixes body areas; Shuffle for a new set
 - **Custom session length:** 30, 45 or 60 seconds per stretch and 3–10 stretches (defaults: 60s × 5). Presets keep their opening and closing moves and add or drop on-theme stretches in between
 - **Animated stick figures** for 20 exercises, with step-by-step cues; one-sided stretches flip halfway with a "Switch sides" cue
-- **Countdown timer** that you tap to pause, plus back and skip buttons; it stays accurate if you switch apps
+- **Countdown timer** in two styles you choose in Settings: a progress ring with the seconds inside (tap it to pause), or a large number over a progress line. Back and skip buttons, and it stays accurate if you switch apps
 - **Get-ready and rest screens** with a breathing pulse and a still "Up next" preview of the next move
 - **Audio:** beeps for the last 3 seconds, spoken cues, and a voice picker with a preview button
 - **Keeps the screen awake** during a routine

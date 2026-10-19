@@ -30,7 +30,12 @@ export type Settings = {
   count: number;
   /** 'system' follows the device; otherwise a theme id. */
   theme: ThemePref;
+  /** Countdown look: a progress ring with the number inside, or a large number over a progress line. */
+  timerStyle: TimerStyle;
 };
+
+export const TIMER_STYLES = ['ring', 'numbers'] as const;
+export type TimerStyle = (typeof TIMER_STYLES)[number];
 const SETTINGS_KEY = 'qs.settings';
 const DEFAULT_SETTINGS: Settings = {
   sound: true,
@@ -39,6 +44,7 @@ const DEFAULT_SETTINGS: Settings = {
   roundSec: 60,
   count: DEFAULT_COUNT,
   theme: 'system',
+  timerStyle: 'ring',
 };
 
 function sanitize(s: Settings): Settings {
@@ -47,6 +53,7 @@ function sanitize(s: Settings): Settings {
     roundSec: ROUND_OPTIONS.includes(s.roundSec) ? s.roundSec : DEFAULT_SETTINGS.roundSec,
     count: clampCount(Number(s.count)),
     theme: s.theme === 'system' || THEME_BY_ID[s.theme] ? s.theme : 'system',
+    timerStyle: TIMER_STYLES.includes(s.timerStyle) ? s.timerStyle : DEFAULT_SETTINGS.timerStyle,
   };
 }
 
