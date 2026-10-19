@@ -1,4 +1,4 @@
-import { Icon } from './Icon';
+import { Icon } from '../elements/Icon';
 
 type Props = {
   remainingMs: number;

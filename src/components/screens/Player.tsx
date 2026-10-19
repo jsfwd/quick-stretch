@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { buildSteps, formatTime, type Routine } from '../lib/routine';
-import { useCountdown } from '../lib/useCountdown';
-import { beep, speak, stopSpeech } from '../lib/audio';
-import { useWakeLock } from '../lib/wakeLock';
-import type { Settings } from '../lib/storage';
-import { Figure } from './figures/Figure';
-import { Icon } from './Icon';
-import { TimerRing } from './TimerRing';
+import { buildSteps, formatTime, type Routine } from '../../lib/routine';
+import { useCountdown } from '../../lib/useCountdown';
+import { beep, speak, stopSpeech } from '../../lib/audio';
+import { useWakeLock } from '../../lib/wakeLock';
+import type { Settings } from '../../lib/storage';
+import { Figure } from '../figures/Figure';
+import { Icon } from '../elements/Icon';
+import { TimerRing } from '../routine/TimerRing';
 
 type Props = {
   routine: Routine;

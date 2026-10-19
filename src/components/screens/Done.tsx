@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { formatDuration, formatWhen, renameHistory, toggleHeart, type HistoryEntry } from '../lib/history';
-import { EditableName } from './EditableName';
-import { HeartButton } from './HeartButton';
-import { Icon } from './Icon';
+import { formatDuration, formatWhen, renameHistory, toggleHeart, type HistoryEntry } from '../../lib/history';
+import { EditableName } from '../elements/EditableName';
+import { HeartButton } from '../elements/HeartButton';
+import { Icon } from '../elements/Icon';
 
 type Props = { entry: HistoryEntry; onAgain: () => void; onHome: () => void };
 

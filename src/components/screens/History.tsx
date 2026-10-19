@@ -7,10 +7,10 @@ import {
   toggleHeart,
   useHistory,
   type HistoryEntry,
-} from '../lib/history';
-import { EditableName } from './EditableName';
-import { HeartButton } from './HeartButton';
-import { Icon } from './Icon';
+} from '../../lib/history';
+import { EditableName } from '../elements/EditableName';
+import { HeartButton } from '../elements/HeartButton';
+import { Icon } from '../elements/Icon';
 
 type Props = {
   onBack: () => void;

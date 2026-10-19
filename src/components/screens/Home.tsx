@@ -1,13 +1,13 @@
-import { PRESETS } from '../data/presets';
-import { buildRoutine, formatTime, newSeed, totalDurationSec, type RoutineSource } from '../lib/routine';
-import type { Settings } from '../lib/storage';
-import { formatWhen, renameHistory, toggleHeart, useHistory, type HistoryEntry } from '../lib/history';
-import { DEFAULT_DARK, DEFAULT_LIGHT, type Theme } from '../theme/themes';
-import { EditableName } from './EditableName';
-import { HeartButton } from './HeartButton';
-import { Icon } from './Icon';
-import { SessionControls } from './SessionControls';
-import { RoutineCard } from './RoutineCard';
+import { PRESETS } from '../../data/presets';
+import { buildRoutine, formatTime, newSeed, totalDurationSec, type RoutineSource } from '../../lib/routine';
+import type { Settings } from '../../lib/storage';
+import { formatWhen, renameHistory, toggleHeart, useHistory, type HistoryEntry } from '../../lib/history';
+import { DEFAULT_DARK, DEFAULT_LIGHT, type Theme } from '../../theme/themes';
+import { EditableName } from '../elements/EditableName';
+import { HeartButton } from '../elements/HeartButton';
+import { Icon } from '../elements/Icon';
+import { SessionControls } from '../routine/SessionControls';
+import { RoutineCard } from '../routine/RoutineCard';
 
 type Props = {
   settings: Settings;

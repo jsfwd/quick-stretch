@@ -1,9 +1,9 @@
-import { formatTime, totalDurationSec, type Routine } from '../lib/routine';
-import { unlockAudio } from '../lib/audio';
-import type { Settings } from '../lib/storage';
-import { Figure } from './figures/Figure';
-import { Icon } from './Icon';
-import { SessionControls } from './SessionControls';
+import { formatTime, totalDurationSec, type Routine } from '../../lib/routine';
+import { unlockAudio } from '../../lib/audio';
+import type { Settings } from '../../lib/storage';
+import { Figure } from '../figures/Figure';
+import { Icon } from '../elements/Icon';
+import { SessionControls } from '../routine/SessionControls';
 
 type Props = {
   routine: Routine;

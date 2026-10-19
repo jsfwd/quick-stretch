@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { MAX_NAME_LENGTH } from '../lib/history';
+import { MAX_NAME_LENGTH } from '../../lib/history';
 import { Icon } from './Icon';
 
 type Props = {

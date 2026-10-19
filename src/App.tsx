@@ -1,10 +1,10 @@
 import { useMemo, useState } from 'react';
-import { Home } from './components/Home';
-import { Preview } from './components/Preview';
-import { Player } from './components/Player';
-import { Done } from './components/Done';
-import { History } from './components/History';
-import { SettingsScreen } from './components/SettingsScreen';
+import { Home } from './components/screens/Home';
+import { Preview } from './components/screens/Preview';
+import { Player } from './components/screens/Player';
+import { Done } from './components/screens/Done';
+import { History } from './components/screens/History';
+import { Settings } from './components/screens/Settings';
 import { FigureGallery } from './components/figures/FigureGallery';
 import { PRESETS } from './data/presets';
 import { buildRoutine, newSeed, type RoutineSource } from './lib/routine';
@@ -55,7 +55,7 @@ export default function App() {
     return <History onBack={home} onReplay={(e) => preview(savedSource(e))} />;
   }
   if (screen.name === 'settings') {
-    return <SettingsScreen settings={settings} onSettings={updateSettings} onBack={home} />;
+    return <Settings settings={settings} onSettings={updateSettings} onBack={home} />;
   }
 
   const homeScreen = (

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { clampCount, MAX_COUNT, MIN_COUNT, ROUND_OPTIONS, type SessionOptions } from '../lib/routine';
+import { clampCount, MAX_COUNT, MIN_COUNT, ROUND_OPTIONS, type SessionOptions } from '../../lib/routine';
 
 type Props = {
   value: SessionOptions;

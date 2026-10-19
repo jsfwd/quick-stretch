@@ -1,6 +1,6 @@
-import type { Preset } from '../data/presets';
-import { buildRoutine, formatTime, totalDurationSec, type SessionOptions } from '../lib/routine';
-import { Figure } from './figures/Figure';
+import type { Preset } from '../../data/presets';
+import { buildRoutine, formatTime, totalDurationSec, type SessionOptions } from '../../lib/routine';
+import { Figure } from '../figures/Figure';
 
 /** How many poses fit in the strip before it collapses to "+N". */
 const MAX_POSES = 7;

@@ -1,8 +1,8 @@
-import { resolveVoice, speak } from '../lib/audio';
-import type { Settings, TimerStyle } from '../lib/storage';
-import { useVoices } from '../lib/useVoices';
-import { THEMES, type Theme } from '../theme/themes';
-import { Icon } from './Icon';
+import { resolveVoice, speak } from '../../lib/audio';
+import type { Settings as SettingsValues, TimerStyle } from '../../lib/storage';
+import { useVoices } from '../../lib/useVoices';
+import { THEMES, type Theme } from '../../theme/themes';
+import { Icon } from '../elements/Icon';
 
 const TIMER_OPTIONS: { id: TimerStyle; name: string }[] = [
   { id: 'ring', name: 'Ring' },
@@ -12,12 +12,12 @@ const TIMER_OPTIONS: { id: TimerStyle; name: string }[] = [
 const PREVIEW_LINE = 'Lymphatic hops. Bounce gently on the balls of your feet.';
 
 type Props = {
-  settings: Settings;
-  onSettings: (patch: Partial<Settings>) => void;
+  settings: SettingsValues;
+  onSettings: (patch: Partial<SettingsValues>) => void;
   onBack: () => void;
 };
 
-export function SettingsScreen({ settings, onSettings, onBack }: Props) {
+export function Settings({ settings, onSettings, onBack }: Props) {
   const voices = useVoices();
   const autoName = voices.length ? resolveVoice()?.name : undefined;
 
