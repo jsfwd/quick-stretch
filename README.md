@@ -2,6 +2,15 @@
 
 Quick stretch and mobility routines (lymphatic hops, desk-break stretches, etc.) with animated stick-figure guides, a countdown timer and voice cues. Built as an installable PWA that runs from a URL or from your iPhone's Home Screen.
 
+## Screenshots
+
+Every screen comes in two themes: **Paper** (light) and **Ink** (dark). Auto mode follows your device's light or dark setting.
+
+|           | Home                                                                                      | Player                                                                                         | Rest                                                                                      | Done                                                                                            | History                                                                                         | Settings                                                                                          |
+| --------- | ----------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| **Paper** | <img src="docs/screenshots/home.png" width="140" alt="Home screen in the Paper theme">    | <img src="docs/screenshots/player.png" width="140" alt="Routine player in the Paper theme">    | <img src="docs/screenshots/rest.png" width="140" alt="Rest screen in the Paper theme">    | <img src="docs/screenshots/done.png" width="140" alt="Completion screen in the Paper theme">    | <img src="docs/screenshots/history.png" width="140" alt="History screen in the Paper theme">    | <img src="docs/screenshots/settings.png" width="140" alt="Settings screen in the Paper theme">    |
+| **Ink**   | <img src="docs/screenshots/home-dark.png" width="140" alt="Home screen in the Ink theme"> | <img src="docs/screenshots/player-dark.png" width="140" alt="Routine player in the Ink theme"> | <img src="docs/screenshots/rest-dark.png" width="140" alt="Rest screen in the Ink theme"> | <img src="docs/screenshots/done-dark.png" width="140" alt="Completion screen in the Ink theme"> | <img src="docs/screenshots/history-dark.png" width="140" alt="History screen in the Ink theme"> | <img src="docs/screenshots/settings-dark.png" width="140" alt="Settings screen in the Ink theme"> |
+
 ## Features
 
 - **Themed routines:** Morning Wake-up, Lymphatic Flow, Desk Break, Hips & Lower Back, Evening Wind-down
@@ -22,10 +31,11 @@ Quick stretch and mobility routines (lymphatic hops, desk-break stretches, etc.)
 ```sh
 npm install
 npm run dev              # http://localhost:7771
-npm run dev -- --host    # also reachable from your phone on the same Wi-Fi
+npm run dev -- --host    # also reachable from your phone on the same wifi
 npm test
 npm run build            # static output in dist/
 npm run preview          # serve the build on port 7771
+npm run screenshots      # retake docs/screenshots (needs the dev server and Chrome)
 ```
 
 ## Install on iPhone
@@ -44,7 +54,7 @@ Deploy `dist/` to any HTTPS static host (Vercel, Netlify, GitHub Pages), open it
 These work on the dev server only, not in the built app:
 
 - `#gallery`: every figure's keyframes plus a live animation of each
-- `#play`, `#play-work`: jump straight into a routine (get-ready screen, or the second exercise)
+- `#play`, `#play-rest`, `#play-work`: jump straight into a routine (get-ready screen, the first rest, or the second exercise)
 - `#settings`: open the Settings screen
 - `#demo`, `#demo-done`, `#demo-history`: fill in sample history and open Home, the completion screen or History
 

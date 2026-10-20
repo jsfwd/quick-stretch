@@ -26,7 +26,7 @@ export default function App() {
       // Dev shortcuts for screenshots (see src/dev/demo.ts).
       const hash = location.hash;
       if (hash === '#settings') return { name: 'settings' };
-      if (hash === '#play' || hash === '#play-work') return { name: 'player', source: { kind: 'preset', preset: PRESETS[0] } };
+      if (hash === '#play' || hash === '#play-rest' || hash === '#play-work') return { name: 'player', source: { kind: 'preset', preset: PRESETS[0] } };
       if (hash.startsWith('#demo')) {
         seedDemoHistory();
         const latest = getHistory()[0];
@@ -89,7 +89,7 @@ export default function App() {
         <Player
           routine={routine}
           settings={settings}
-          initialStep={import.meta.env.DEV && location.hash === '#play-work' ? 3 : 0}
+          initialStep={!import.meta.env.DEV ? 0 : location.hash === '#play-work' ? 3 : location.hash === '#play-rest' ? 2 : 0}
           onExit={home}
           onFinish={({ completed, activeSec }) => {
             const entry = addHistory({
